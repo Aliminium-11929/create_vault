@@ -36,7 +36,7 @@ public class ProjectPicture {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "picture_id", updatable = false, nullable = false)
-    private UUID pictureId;
+    private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "project_id", nullable = false)
@@ -49,16 +49,17 @@ public class ProjectPicture {
 
     @Column(name = "picture_order", nullable = false)
     @PositiveOrZero
-    private int pictureOrder;
+    private int order;
 
+    @Column(name = "picture_caption", nullable = true)
     @NotEmpty
-    private String pictureCaption;
+    private String caption;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof ProjectPicture other)) return false;
-        return pictureId != null && pictureId.equals(other.pictureId);
+        return id != null && id.equals(other.id);
     }
 
     @Override

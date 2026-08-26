@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import org.hibernate.annotations.Audited.Table;
+
 import com.craete.vault.Domain.Projects.Entities.Project;
 
 import jakarta.persistence.CascadeType;
@@ -22,11 +24,13 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
+@Table(name = "fields")
 public class Field {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @NotNull
+    @Column(name = "field_id")
     private UUID fieldId;
 
     @OneToMany(

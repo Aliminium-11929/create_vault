@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import org.hibernate.annotations.Audited.Table;
+
 import com.craete.vault.Domain.Fields.Entities.Field;
+import com.craete.vault.Domain.ProjectMembers.Entities.ProjectMember;
 import com.craete.vault.Domain.ProjectPictures.Entities.ProjectPicture;
 import com.craete.vault.Domain.Users.Entities.User;
 
@@ -18,7 +21,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.OrderBy;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -30,33 +32,35 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
+@Table(name = "projects")
 public class Project {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "project_id", updatable = false, nullable = false)
-    private UUID projectId;
+    private UUID id;
 
     @NotBlank
-    private String projectTitle;
+    @Column(name = "project_title", nullable = false, length = 300)
+    private String title;
 
     @Column(name = "project_description", nullable = true, columnDefinition = "TEXT")
-    private String projectDescription;
+    private String description;
 
     @Column(name = "academic_year", nullable = false)
     @Min(2000)
     @Max(2100)
     private int academicYear;
 
-    @OneToOne(optional = true)
-    @JoinColumn(name = "tutor_id", nullable = true, updatable = true)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "tutor_id")
     private User tutor;
 
-    @OneToOne(optional = false)
-    @JoinColumn(name = "supervisor_id", nullable = false, updatable = true)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "supervisor_id")
     private User supervisor;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "project_id", nullable = false)
+    @JoinColumn(name = "field_id", nullable = false)
     @NotNull
     private Field field;
 
@@ -67,6 +71,13 @@ public class Project {
     )
     @OrderBy("pictureOrder ASC")
     private List<ProjectPicture> pictures = new ArrayList<>();
+
+    @OneToMany(
+        mappedBy = "project",
+        orphanRemoval = true,
+        cascade = CascadeType.ALL
+    )
+    private List<ProjectMember> members = new ArrayList<>();
 
     public void addPicture(ProjectPicture picture) {
             pictures.add(picture);
@@ -82,7 +93,7 @@ public class Project {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Project other)) return false;
-        return projectId != null && projectId.equals(other.projectId);
+        return id != null && id.equals(other.id);
     }
 
     @Override
