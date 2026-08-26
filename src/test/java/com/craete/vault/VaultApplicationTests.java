@@ -1,4 +1,4 @@
-package com.create.vault;
+package com.craete.vault;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
