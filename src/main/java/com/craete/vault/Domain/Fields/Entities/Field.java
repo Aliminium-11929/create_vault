@@ -35,7 +35,7 @@ public class Field {
         orphanRemoval = true
     )
     @OrderBy("academicYear ASC")
-    private List<Project> pictures = new ArrayList<>();
+    private List<Project> projects = new ArrayList<>();
 
     @NotBlank
     @Column(name = "field_name", nullable = false)
