@@ -10,7 +10,7 @@ import com.craete.vault.Application.Users.DTOs.UserCreateModel;
 import com.craete.vault.Application.Users.DTOs.UserPatchModel;
 import com.craete.vault.Application.Users.DTOs.UserStorageModel;
 import com.craete.vault.Domain.Fields.Entities.Field;
-import com.craete.vault.Domain.Projects.Entities.Project;
+import com.craete.vault.Domain.ProjectMembers.Entities.ProjectMember;
 import com.craete.vault.Domain.Users.Entities.User;
 
 @Component
@@ -26,7 +26,7 @@ public class UserMapper {
         user.setEmail(userCreateModel.getEmail());
         user.setRole(userCreateModel.getRole());
         user.setField(toField(userCreateModel.getFieldId()));
-        user.setProjects(toProjects(userCreateModel.getProjectIds()));
+        user.setProjectMemberships(toProjectMemberships(userCreateModel.getProjectIds()));
         return user;
     }
 
@@ -39,7 +39,7 @@ public class UserMapper {
         user.setEmail(userPatchModel.getEmail());
         user.setRole(userPatchModel.getRole());
         user.setField(toField(userPatchModel.getFieldId()));
-        user.setProjects(toProjects(userPatchModel.getProjectIds()));
+        user.setProjectMemberships(toProjectMemberships(userPatchModel.getProjectIds()));
         return user;
     }
 
@@ -48,10 +48,10 @@ public class UserMapper {
             return null;
         }
 
-        List<UUID> projectIds = user.getProjects() == null
+        List<UUID> projectMembershipIds = user.getProjectMemberships() == null
             ? List.of()
-            : user.getProjects().stream()
-                .map(project -> project.getProjectId())
+            : user.getProjectMemberships().stream()
+                .map(projectMembership -> projectMembership.getProject().getId())
                 .toList();
 
         return new UserStorageModel(
@@ -60,7 +60,7 @@ public class UserMapper {
             user.getEmail(),
             user.getRole(),
             user.getField() != null ? user.getField().getFieldId() : null,
-            projectIds
+            projectMembershipIds
         );
     }
 
@@ -84,16 +84,16 @@ public class UserMapper {
         return field;
     }
 
-    private List<Project> toProjects(List<UUID> projectIds) {
+    private List<ProjectMember> toProjectMemberships(List<UUID> projectIds) {
         if (projectIds == null) {
             return List.of();
         }
 
         return IntStream.range(0, projectIds.size())
             .mapToObj(index -> {
-                Project project = new Project();
-                project.setProjectId(projectIds.get(index));
-                return project;
+                ProjectMember projectMembership = new ProjectMember();
+                projectMembership.setId(projectIds.get(index));
+                return projectMembership;
             })
             .toList();
     }

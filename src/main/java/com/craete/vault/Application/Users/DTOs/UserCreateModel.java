@@ -3,6 +3,8 @@ package com.craete.vault.Application.Users.DTOs;
 import java.util.List;
 import java.util.UUID;
 
+import com.craete.vault.Domain.Users.Entities.User.UserRole;
+
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -25,7 +27,7 @@ public class UserCreateModel {
 	private String email;
 
 	@NotBlank
-	private String role;
+	private UserRole role;
 
 	@NotNull
 	private UUID fieldId;
