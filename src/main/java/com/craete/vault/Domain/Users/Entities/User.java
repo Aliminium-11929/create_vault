@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import com.craete.vault.Domain.ComoponentReservations.Entities.ComponentReservation;
+import com.craete.vault.Domain.ComponentReservations.Entities.ComponentReservation;
 import com.craete.vault.Domain.Fields.Entities.Field;
 import com.craete.vault.Domain.ProjectMembers.Entities.ProjectMember;
 

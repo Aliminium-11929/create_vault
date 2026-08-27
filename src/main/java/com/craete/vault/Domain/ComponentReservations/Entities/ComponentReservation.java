@@ -1,4 +1,4 @@
-package com.craete.vault.Domain.ComoponentReservations.Entities;
+package com.craete.vault.Domain.ComponentReservations.Entities;
 
 import java.time.ZonedDateTime;
 import java.util.UUID;

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import com.craete.vault.Domain.ComoponentReservations.Entities.ComponentReservation;
+import com.craete.vault.Domain.ComponentReservations.Entities.ComponentReservation;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
