@@ -84,15 +84,15 @@ public class UserMapper {
         return field;
     }
 
-    private List<ProjectMember> toProjectMemberships(List<UUID> projectIds) {
-        if (projectIds == null) {
+    private List<ProjectMember> toProjectMemberships(List<UUID> projectMembershipIds) {
+        if (projectMembershipIds == null) {
             return List.of();
         }
 
-        return IntStream.range(0, projectIds.size())
+        return IntStream.range(0, projectMembershipIds.size())
             .mapToObj(index -> {
                 ProjectMember projectMembership = new ProjectMember();
-                projectMembership.setId(projectIds.get(index));
+                projectMembership.setId(projectMembershipIds.get(index));
                 return projectMembership;
             })
             .toList();
