@@ -1,13 +1,14 @@
 package com.craete.vault.Application.Users.Services;
 
 import java.util.List;
+
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import com.craete.vault.Application.Users.DTOs.UserCreateModel;
 import com.craete.vault.Application.Users.DTOs.UserPatchModel;
 import com.craete.vault.Application.Users.DTOs.UserStorageModel;
 import com.craete.vault.Application.Users.Interfaces.IUserService;
-import com.craete.vault.Application.Users.Mappers.UserMapper;
 import com.craete.vault.Domain.Users.Entities.User;
 import com.craete.vault.Exceptions.UserNotFoundException;
 import com.craete.vault.Infrastructure.Users.Repository.UserRepository;
@@ -18,11 +19,11 @@ import jakarta.transaction.Transactional;
 public class UserService implements IUserService {
 
     private final UserRepository userRepository;
-    private final UserMapper userMapper;
+    private final ModelMapper modelMapper;
 
-    public UserService(UserRepository userRepository, UserMapper userMapper) {
+    public UserService(UserRepository userRepository, ModelMapper modelMapper) {
         this.userRepository = userRepository;
-        this.userMapper = userMapper;
+        this.modelMapper = modelMapper;
     }
 
     @Override
@@ -32,15 +33,15 @@ public class UserService implements IUserService {
             throw new IllegalArgumentException("User must not be null.");
         }
 
-        User savedUser = userRepository.save(userMapper.toEntity(userToCreate));
-        return userMapper.toStorageModel(savedUser);
+        User savedUser = userRepository.save(modelMapper.map(userToCreate, User.class));
+        return modelMapper.map(savedUser, UserStorageModel.class);
     }
 
     @Override
     public UserStorageModel getUserById(Long id){
         User existingUser = userRepository.findById(id)
             .orElseThrow(() -> new UserNotFoundException(String.format("User with ID %s was not found.", id)));
-        return userMapper.toStorageModel(existingUser);
+        return modelMapper.map(existingUser, UserStorageModel.class);
     }
 
     @Override
@@ -49,13 +50,17 @@ public class UserService implements IUserService {
         if (existingUsers.isEmpty()) {
             throw new UserNotFoundException("Users not found");
         }
-        return userMapper.toStorageModels(existingUsers);
+        return existingUsers.stream()
+            .map(user -> modelMapper.map(user, UserStorageModel.class))
+            .toList();
     }
 
     @Override
     @Transactional
     public List<UserStorageModel> getAllUsers(){
-        return userMapper.toStorageModels(userRepository.findAll());
+        return userRepository.findAll().stream()
+            .map(user -> modelMapper.map(user, UserStorageModel.class))
+            .toList();
     }
 
     @Override
@@ -68,9 +73,9 @@ public class UserService implements IUserService {
         User existingUser = userRepository.findById(patchedUser.getId())
             .orElseThrow(() -> new UserNotFoundException(String.format("User with ID %s was not found.", patchedUser.getId())));
 
-        userMapper.applyPatch(patchedUser, existingUser);
+        modelMapper.map(patchedUser, existingUser);
 
-        return userMapper.toStorageModel(userRepository.save(existingUser));
+        return modelMapper.map(userRepository.save(existingUser), UserStorageModel.class);
     }
 
     @Override
