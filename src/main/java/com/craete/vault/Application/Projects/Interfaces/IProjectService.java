@@ -11,9 +11,9 @@ public interface IProjectService {
 
     ProjectStorageModel createProject(ProjectCreateModel ProjectCreateModel);
     ProjectStorageModel getProjectById(UUID id);
-    List<ProjectStorageModel> getProjectsById(List<UUID> id);
+    List<ProjectStorageModel> getProjectsById(List<UUID> ids);
     List<ProjectStorageModel> getAllProjects();
-    List<Long> getMembershipIds();
+    List<Long> getMemberIdsByProjectId(UUID id);
     ProjectStorageModel patchProject(ProjectPatchModel ProjectPatchModel);
     void deleteProjectById(UUID id);
 

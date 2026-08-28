@@ -22,7 +22,7 @@ public class ProjectStorageModel {
     private Long supervisorId;
     private UUID fieldId;
     private List<UUID> pictures;
-    private List<UUID> members;
+    private List<UUID> memberships;
 
 
 }
