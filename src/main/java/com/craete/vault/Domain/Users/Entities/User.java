@@ -6,7 +6,7 @@ import java.util.Objects;
 
 import com.craete.vault.Domain.ComponentReservations.Entities.ComponentReservation;
 import com.craete.vault.Domain.Fields.Entities.Field;
-import com.craete.vault.Domain.ProjectMembers.Entities.ProjectMember;
+import com.craete.vault.Domain.ProjectMemberships.Entities.ProjectMembership;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -61,7 +61,7 @@ public class User {
     private Field field;
 
     @OneToMany(mappedBy = "user")
-    private List<ProjectMember> projectMemberships = new ArrayList<>();
+    private List<ProjectMembership> projectMemberships = new ArrayList<>();
 
     @OneToMany(mappedBy = "user")
     private List<ComponentReservation> ComponentReservations = new ArrayList<>();

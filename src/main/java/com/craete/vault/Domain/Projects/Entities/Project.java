@@ -7,7 +7,7 @@ import java.util.UUID;
 import org.hibernate.annotations.Audited.Table;
 
 import com.craete.vault.Domain.Fields.Entities.Field;
-import com.craete.vault.Domain.ProjectMembers.Entities.ProjectMember;
+import com.craete.vault.Domain.ProjectMemberships.Entities.ProjectMembership;
 import com.craete.vault.Domain.ProjectPictures.Entities.ProjectPicture;
 import com.craete.vault.Domain.Users.Entities.User;
 
@@ -51,8 +51,8 @@ public class Project {
     @Max(2100)
     private int academicYear;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "tutor_id")
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @JoinColumn(name = "tutor_id", nullable = true)
     private User tutor;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -77,7 +77,7 @@ public class Project {
         orphanRemoval = true,
         cascade = CascadeType.ALL
     )
-    private List<ProjectMember> members = new ArrayList<>();
+    private List<ProjectMembership> projectMemberships = new ArrayList<>();
 
     public void addPicture(ProjectPicture picture) {
             pictures.add(picture);

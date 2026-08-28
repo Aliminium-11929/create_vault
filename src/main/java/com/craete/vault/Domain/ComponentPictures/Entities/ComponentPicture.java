@@ -14,7 +14,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Getter;
@@ -52,7 +51,6 @@ public class ComponentPicture {
     private int order;
 
     @Column(name = "picture_caption", nullable = true)
-    @NotEmpty
     private String caption;
 
     @Override
