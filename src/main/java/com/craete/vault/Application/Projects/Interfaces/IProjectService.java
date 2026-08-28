@@ -16,6 +16,5 @@ public interface IProjectService {
     List<Long> getMembershipIds();
     ProjectStorageModel patchProject(ProjectPatchModel ProjectPatchModel);
     void deleteProjectById(UUID id);
-    void deleteProjectByUserId(UUID UserId);
 
 }

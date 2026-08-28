@@ -1,6 +1,5 @@
 package com.craete.vault.Application.Fields.DTOs;
 
-import java.util.List;
 import java.util.UUID;
 
 import jakarta.validation.constraints.NotNull;
@@ -21,6 +20,4 @@ public class FieldPatchModel {
     @NotNull
     private String fieldName;
 
-    @NotNull
-    private List<UUID> projects;
 }

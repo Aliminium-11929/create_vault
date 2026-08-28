@@ -1,7 +1,5 @@
 package com.craete.vault.Application.Fields.DTOs;
 
-import java.util.List;
-import java.util.UUID;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -18,6 +16,4 @@ public class FieldCreateModel {
     @NotNull
     private String fieldName;
 
-    @NotNull
-    private List<UUID> projects;
 }

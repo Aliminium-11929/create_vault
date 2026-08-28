@@ -1,6 +1,5 @@
 package com.craete.vault.Application.Projects.DTOs;
 
-import java.util.List;
 import java.util.UUID;
 
 import jakarta.validation.constraints.Max;
@@ -31,16 +30,12 @@ public class ProjectPatchModel {
     @Max(2100)
     private int academicYear;
 
-    private UUID tutorId; // nullable
+    private Long tutorId; // nullable
 
     @NotNull
-    private UUID supervisorId;
+    private Long supervisorId;
 
     @NotNull
     private UUID fieldId;
-
-    private List<UUID> pictures; // refers to project pictures
-    private List<UUID> members; // refers to project memberships
-
 
 }

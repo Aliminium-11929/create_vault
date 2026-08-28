@@ -1,10 +1,10 @@
 package com.craete.vault.Application.Components.DTOs;
 
-import java.util.List;
 import java.util.UUID;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,5 +27,7 @@ public class ComponentPatchModel {
     private int quantity;
 
     @NotNull
-    private List<UUID> reservations;
+    @PositiveOrZero
+    private int availableQuantity;
+
 }

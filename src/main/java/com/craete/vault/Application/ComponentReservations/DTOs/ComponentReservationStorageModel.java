@@ -19,6 +19,6 @@ public class ComponentReservationStorageModel {
     private ZonedDateTime reservedFrom;
     private ZonedDateTime reservedTo;
     private int quantity;
-    private UUID borrowerId;
+    private Long borrowerId;
 
 }

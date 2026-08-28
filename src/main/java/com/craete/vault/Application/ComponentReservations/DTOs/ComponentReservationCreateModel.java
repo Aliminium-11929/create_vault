@@ -30,6 +30,6 @@ public class ComponentReservationCreateModel {
     private int quantity;
 
     @NotNull
-    private UUID borrowerId;
+    private Long borrowerId;
 
 }

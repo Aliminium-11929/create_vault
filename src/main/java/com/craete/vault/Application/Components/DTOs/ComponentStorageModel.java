@@ -16,6 +16,7 @@ public class ComponentStorageModel {
 
     private UUID id;
     private String name;
-    private int quantity;
+    private int totalQuantity;
+    private int availableQuantity;
     private List<UUID> reservations;
 }

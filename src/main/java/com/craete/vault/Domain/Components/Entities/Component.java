@@ -17,6 +17,7 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -39,8 +40,13 @@ public class Component {
 
     @NotNull
     @Positive
-    @Column(name = "component_quantity", updatable = false, nullable = false)
-    private int quantity;
+    @Column(name = "component_total_quantity", updatable = false, nullable = false)
+    private int totalQuantity;
+
+    @NotNull
+    @PositiveOrZero
+    @Column(name = "component_available_quantity", updatable = false, nullable = false)
+    private int availableQuantity;
 
     @OneToMany(
         mappedBy = "component",

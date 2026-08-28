@@ -33,6 +33,6 @@ public class ComponentReservationPatchModel {
     private int quantity;
 
     @NotNull
-    private UUID borrowerId;
+    private Long borrowerId;
 
 }

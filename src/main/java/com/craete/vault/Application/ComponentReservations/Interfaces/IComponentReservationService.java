@@ -11,12 +11,12 @@ public interface IComponentReservationService {
 
     ComponentReservationStorageModel createComponentReservation(ComponentReservationCreateModel ComponentReservationCreateModel);
     ComponentReservationStorageModel getComponentReservationById(UUID id);
-    List<ComponentReservationStorageModel> getComponentReservationsByComponentId(UUID id);
+    List<ComponentReservationStorageModel> getComponentReservationsByComponentId(UUID ComponentId);
+    List<ComponentReservationStorageModel> getComponentReservationsByUserId(Long UserId);
     List<ComponentReservationStorageModel> getComponentReservationsById(List<UUID> id);
     List<ComponentReservationStorageModel> getAllComponentReservations();
     ComponentReservationStorageModel patchComponentReservation(ComponentReservationPatchModel ComponentReservationPatchModel);
     void deleteComponentReservationById(UUID id);
     void deleteComponentReservationByComponentId(UUID ComponentId);
-    void deleteComponentReservationByUserId(UUID UserId);
 
 }

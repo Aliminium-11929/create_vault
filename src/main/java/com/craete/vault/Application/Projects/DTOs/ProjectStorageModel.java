@@ -18,8 +18,8 @@ public class ProjectStorageModel {
     private String title;
     private String description;
     private int academicYear;
-    private UUID tutorId;
-    private UUID supervisorId;
+    private Long tutorId;
+    private Long supervisorId;
     private UUID fieldId;
     private List<UUID> pictures;
     private List<UUID> members;

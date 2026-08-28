@@ -13,7 +13,6 @@ public interface IComponentService {
     ComponentStorageModel getComponentById(UUID id);
     List<ComponentStorageModel> getComponentsById(List<UUID> id);
     List<ComponentStorageModel> getAllComponents();
-    List<UUID> getComponentReservations(UUID id);
     ComponentStorageModel patchComponent(ComponentPatchModel ComponentPatchModel);
     void deleteComponentById(UUID id);
 
