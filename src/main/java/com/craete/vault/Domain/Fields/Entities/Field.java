@@ -7,6 +7,7 @@ import java.util.UUID;
 import org.hibernate.annotations.Audited.Table;
 
 import com.craete.vault.Domain.Projects.Entities.Project;
+import com.craete.vault.Domain.Users.Entities.User;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -33,6 +34,10 @@ public class Field {
     @Column(name = "field_id")
     private UUID fieldId;
 
+    @NotBlank
+    @Column(name = "field_name", nullable = false)
+    private String fieldName;
+
     @OneToMany(
         mappedBy = "field",
         cascade = CascadeType.ALL,
@@ -41,7 +46,11 @@ public class Field {
     @OrderBy("academicYear ASC")
     private List<Project> projects = new ArrayList<>();
 
-    @NotBlank
-    @Column(name = "field_name", nullable = false)
-    private String fieldName;
+    @OneToMany(
+        mappedBy = "field",
+        cascade = CascadeType.ALL,
+        orphanRemoval = true
+    )
+    @OrderBy("academicYear ASC")
+    private List<User> users = new ArrayList<>();
 }

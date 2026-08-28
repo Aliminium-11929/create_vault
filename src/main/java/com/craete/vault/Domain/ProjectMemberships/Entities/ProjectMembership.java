@@ -1,4 +1,4 @@
-package com.craete.vault.Domain.ProjectMembers.Entities;
+package com.craete.vault.Domain.ProjectMemberships.Entities;
 
 import java.util.UUID;
 
@@ -28,11 +28,11 @@ import lombok.Setter;
         columnNames = {"project_id", "user_id"}
     )
 )
-public class ProjectMember {
+public class ProjectMembership {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "project_member_id", updatable = false, nullable = false)
+    @Column(name = "project_membership_id", updatable = false, nullable = false)
     private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -40,6 +40,6 @@ public class ProjectMember {
     private Project project;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    @JoinColumn(name = "member_id", nullable = false)
+    private User member;
 }

@@ -12,7 +12,7 @@ import com.craete.vault.Application.Users.DTOs.UserCreateModel;
 import com.craete.vault.Application.Users.DTOs.UserPatchModel;
 import com.craete.vault.Application.Users.DTOs.UserStorageModel;
 import com.craete.vault.Domain.Fields.Entities.Field;
-import com.craete.vault.Domain.ProjectMembers.Entities.ProjectMember;
+import com.craete.vault.Domain.ProjectMemberships.Entities.ProjectMembership;
 import com.craete.vault.Domain.Projects.Entities.Project;
 import com.craete.vault.Domain.Users.Entities.User;
 
@@ -34,7 +34,7 @@ public class ModelMapperConfig {
             return field;
         };
 
-        Converter<List<UUID>, List<ProjectMember>> projectMembershipsFromIdsConverter = context -> {
+        Converter<List<UUID>, List<ProjectMembership>> projectMembershipsFromIdsConverter = context -> {
             List<UUID> projectIds = context.getSource();
             if (projectIds == null) {
                 return List.of();
@@ -46,9 +46,9 @@ public class ModelMapperConfig {
                     Project project = new Project();
                     project.setId(projectId);
 
-                    ProjectMember membership = new ProjectMember();
+                    ProjectMembership membership = new ProjectMembership();
                     membership.setProject(project);
-                    membership.setUser(destinationUser);
+                    membership.setMember(destinationUser);
                     return membership;
                 })
                 .toList();
@@ -59,14 +59,14 @@ public class ModelMapperConfig {
             return field == null ? null : field.getFieldId();
         };
 
-        Converter<List<ProjectMember>, List<UUID>> projectIdsConverter = context -> {
-            List<ProjectMember> memberships = context.getSource();
+        Converter<List<ProjectMembership>, List<UUID>> projectIdsConverter = context -> {
+            List<ProjectMembership> memberships = context.getSource();
             if (memberships == null) {
                 return List.of();
             }
 
             return memberships.stream()
-                .map(ProjectMember::getProject)
+                .map(ProjectMembership::getProject)
                 .filter(project -> project != null && project.getId() != null)
                 .map(Project::getId)
                 .toList();

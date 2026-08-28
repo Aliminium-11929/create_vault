@@ -16,7 +16,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.validation.constraints.Positive;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -47,8 +47,8 @@ public class ComponentReservation {
 	private ZonedDateTime reservedTo;
 
 	@NotNull
-	@PositiveOrZero
-	private Long quantity;
+	@Positive
+	private int quantity;
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
 	@JoinColumn(name = "borrower_id", nullable = false)
