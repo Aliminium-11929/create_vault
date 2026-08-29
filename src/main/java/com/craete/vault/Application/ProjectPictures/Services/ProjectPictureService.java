@@ -72,6 +72,35 @@ public class ProjectPictureService implements IProjectPictureService{
     }
 
     @Override
+    public ProjectPictureStorageModel getProjectPictureByProjectId(UUID projectId) {
+        if (projectId == null) {
+            throw new IllegalArgumentException("Project ID must not be null.");
+        }
+
+        return projectPictureRepository.findAll().stream()
+            .filter(picture -> picture.getProject() != null && picture.getProject().getId().equals(projectId))
+            .findFirst()
+            .map(picture -> modelMapper.map(picture, ProjectPictureStorageModel.class))
+            .orElseThrow(() -> new ProjectPictureNotFoundException(
+                String.format("Project picture for project ID %s was not found.", projectId)));
+    }
+
+    @Override
+    public ProjectPictureStorageModel getProjectPictureByProjectId(UUID projectId, int order) {
+        if (projectId == null) {
+            throw new IllegalArgumentException("Project ID must not be null.");
+        }
+
+        return projectPictureRepository.findAll().stream()
+            .filter(picture -> picture.getProject() != null && picture.getProject().getId().equals(projectId))
+            .filter(picture -> picture.getOrder() == order)
+            .findFirst()
+            .map(picture -> modelMapper.map(picture, ProjectPictureStorageModel.class))
+            .orElseThrow(() -> new ProjectPictureNotFoundException(
+                String.format("Project picture for project ID %s with order %s was not found.", projectId, order)));
+    }
+
+    @Override
     @Transactional
     public ProjectPictureStorageModel patchProjectPicture(ProjectPicturePatchModel ProjectPicturePatchModel) {
         if (ProjectPicturePatchModel == null) throw new IllegalArgumentException("Picture can't be null.");
