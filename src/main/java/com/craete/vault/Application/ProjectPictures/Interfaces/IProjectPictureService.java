@@ -11,6 +11,8 @@ public interface IProjectPictureService {
 
     ProjectPictureStorageModel createProjectPicture(ProjectPictureCreateModel ProjectPictureCreateModel);
     ProjectPictureStorageModel getProjectPictureById(UUID id);
+    ProjectPictureStorageModel getProjectPictureByProjectId(UUID ProjectId);
+    ProjectPictureStorageModel getProjectPictureByProjectId(UUID ProjectId, int order);
     List<ProjectPictureStorageModel> getProjectPicturesById(List<UUID> ids);
     List<ProjectPictureStorageModel> getProjectPicturesByProjectId(UUID ProjectId);
     List<ProjectPictureStorageModel> getAllProjectPictures();

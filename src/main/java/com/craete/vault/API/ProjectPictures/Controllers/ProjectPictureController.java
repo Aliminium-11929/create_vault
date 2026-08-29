@@ -37,6 +37,16 @@ public class ProjectPictureController {
         return projectPictureService.getProjectPictureById(id);
     }
 
+    @GetMapping("/project/{projectId}/single")
+    public ProjectPictureStorageModel getProjectPictureByProjectId(@PathVariable UUID id) {
+        return projectPictureService.getProjectPictureByProjectId(id);
+    }
+
+    @GetMapping("/project/{projectId}/single/{order}")
+    public ProjectPictureStorageModel getProjectPictureByProjectId(@PathVariable UUID id, @PathVariable int order) {
+        return projectPictureService.getProjectPictureByProjectId(id, order);
+    }
+
     @GetMapping("/project/{projectId}")
     public List<ProjectPictureStorageModel> getProjectPicturesByProjectId(@PathVariable UUID projectId) {
         return projectPictureService.getProjectPicturesByProjectId(projectId);
