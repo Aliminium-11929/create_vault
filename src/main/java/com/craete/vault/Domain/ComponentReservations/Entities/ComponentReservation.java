@@ -3,6 +3,7 @@ package com.craete.vault.Domain.ComponentReservations.Entities;
 import java.time.ZonedDateTime;
 import java.util.UUID;
 
+import com.craete.vault.Domain.AuditEntity;
 import com.craete.vault.Domain.Components.Entities.Component;
 import com.craete.vault.Domain.Users.Entities.User;
 
@@ -28,7 +29,7 @@ import lombok.Setter;
         columnNames = {"borrower_id", "component_id"}
     )
 )
-public class ComponentReservation {
+public class ComponentReservation extends AuditEntity {
 
 	@Id
 	@Column(name = "reservation_id")

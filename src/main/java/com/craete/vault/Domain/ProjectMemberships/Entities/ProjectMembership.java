@@ -2,6 +2,7 @@ package com.craete.vault.Domain.ProjectMemberships.Entities;
 
 import java.util.UUID;
 
+import com.craete.vault.Domain.AuditEntity;
 import com.craete.vault.Domain.Projects.Entities.Project;
 import com.craete.vault.Domain.Users.Entities.User;
 
@@ -28,7 +29,7 @@ import lombok.Setter;
         columnNames = {"project_id", "user_id"}
     )
 )
-public class ProjectMembership {
+public class ProjectMembership extends AuditEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import org.hibernate.annotations.Audited.Table;
 
+import com.craete.vault.Domain.AuditEntity;
 import com.craete.vault.Domain.Fields.Entities.Field;
 import com.craete.vault.Domain.ProjectMemberships.Entities.ProjectMembership;
 import com.craete.vault.Domain.ProjectPictures.Entities.ProjectPicture;
@@ -33,7 +34,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Table(name = "projects")
-public class Project {
+public class Project extends AuditEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "project_id", updatable = false, nullable = false)

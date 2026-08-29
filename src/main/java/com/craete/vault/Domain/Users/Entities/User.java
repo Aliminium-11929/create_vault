@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import com.craete.vault.Domain.AuditEntity;
 import com.craete.vault.Domain.ComponentReservations.Entities.ComponentReservation;
 import com.craete.vault.Domain.Fields.Entities.Field;
 import com.craete.vault.Domain.ProjectMemberships.Entities.ProjectMembership;
@@ -30,7 +31,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @Table(name = "users")
-public class User {
+public class User extends AuditEntity {
 
     public enum UserRole {
         STUDENT,

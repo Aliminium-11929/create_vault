@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import com.craete.vault.Domain.AuditEntity;
 import com.craete.vault.Domain.ComponentReservations.Entities.ComponentReservation;
 
 import jakarta.persistence.CascadeType;
@@ -27,7 +28,7 @@ import lombok.Setter;
 @Table(
     name = "components"
 )
-public class Component {
+public class Component extends AuditEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import org.hibernate.annotations.Audited.Table;
 
+import com.craete.vault.Domain.AuditEntity;
 import com.craete.vault.Domain.Projects.Entities.Project;
 import com.craete.vault.Domain.Users.Entities.User;
 
@@ -26,7 +27,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Table(name = "fields")
-public class Field {
+public class Field extends AuditEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

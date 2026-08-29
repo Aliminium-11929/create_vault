@@ -2,6 +2,7 @@ package com.craete.vault.Domain.ComponentPictures.Entities;
 
 import java.util.UUID;
 
+import com.craete.vault.Domain.AuditEntity;
 import com.craete.vault.Domain.Components.Entities.Component;
 
 import jakarta.persistence.Column;
@@ -31,7 +32,7 @@ import lombok.Setter;
         )
     }
 )
-public class ComponentPicture {
+public class ComponentPicture extends AuditEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "picture_id", updatable = false, nullable = false)
