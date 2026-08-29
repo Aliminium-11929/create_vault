@@ -3,14 +3,13 @@ package com.craete.vault.Domain.ComponentReservations.Entities;
 import java.time.ZonedDateTime;
 import java.util.UUID;
 
-import org.springframework.data.annotation.Id;
-
 import com.craete.vault.Domain.Components.Entities.Component;
 import com.craete.vault.Domain.Users.Entities.User;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;

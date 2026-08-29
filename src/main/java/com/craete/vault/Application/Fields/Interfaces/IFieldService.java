@@ -14,7 +14,7 @@ public interface IFieldService {
     List<FieldStorageModel> getFieldsById(List<UUID> id);
     List<FieldStorageModel> getAllFields();
     List<UUID> getProjectsInField(UUID id);
-    List<UUID> getUsersInField(UUID id);
+    List<Long> getUsersInField(UUID id);
     FieldStorageModel patchField(FieldPatchModel FieldPatchModel);
     void deleteFieldById(UUID id);
 

@@ -24,7 +24,7 @@ public class ComponentPatchModel {
 
     @NotNull
     @Positive
-    private int quantity;
+    private int totalQuantity;
 
     @NotNull
     @PositiveOrZero
