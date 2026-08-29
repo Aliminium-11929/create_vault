@@ -11,13 +11,11 @@ public interface IProjectPictureService {
 
     ProjectPictureStorageModel createProjectPicture(ProjectPictureCreateModel ProjectPictureCreateModel);
     ProjectPictureStorageModel getProjectPictureById(UUID id);
-    ProjectPictureStorageModel getProjectPictureByProjectId(UUID ProjectId);
-    ProjectPictureStorageModel getProjectPictureByProjectId(UUID ProjectId, int order);
-    List<ProjectPictureStorageModel> getProjectPicturesById(List<UUID> id);
-    List<ProjectPictureStorageModel> getProjectPicturesByProjectId(List<UUID> ProjectId);
+    List<ProjectPictureStorageModel> getProjectPicturesById(List<UUID> ids);
+    List<ProjectPictureStorageModel> getProjectPicturesByProjectId(UUID ProjectId);
     List<ProjectPictureStorageModel> getAllProjectPictures();
     ProjectPictureStorageModel patchProjectPicture(ProjectPicturePatchModel ProjectPicturePatchModel);
     void deleteProjectPictureById(UUID id);
-    void deleteProjectPictureByProjectId(UUID ProjectId);
+    void deleteProjectPicturesByProjectId(UUID ProjectId);
 
 }
