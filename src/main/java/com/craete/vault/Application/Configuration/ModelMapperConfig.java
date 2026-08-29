@@ -35,17 +35,6 @@ public class ModelMapperConfig {
     public ModelMapper modelMapper() {
         ModelMapper modelMapper = new ModelMapper();
 
-        Converter<UUID, Field> fieldFromIdConverter = context -> {
-            UUID fieldId = context.getSource();
-            if (fieldId == null) {
-                return null;
-            }
-
-            Field field = new Field();
-            field.setFieldId(fieldId);
-            return field;
-        };
-
         Converter<List<UUID>, List<ProjectMembership>> projectMembershipsFromIdsConverter = context -> {
             List<UUID> projectIds = context.getSource();
             if (projectIds == null) {
@@ -84,22 +73,6 @@ public class ModelMapperConfig {
                 .toList();
         };
 
-        Converter<UUID, Component> componentFromIdConverter = context -> {
-            UUID componentId = context.getSource();
-            if (componentId == null) {
-                return null;
-            }
-
-            Component component = new Component();
-            component.setId(componentId);
-            return component;
-        };
-
-        Converter<Component, UUID> componentIdConverter = context -> {
-            Component component = context.getSource();
-            return component == null ? null : component.getId();
-        };
-
         Converter<List<ComponentReservation>, List<UUID>> reservationIdsConverter = context -> {
             List<ComponentReservation> reservations = context.getSource();
             if (reservations == null) {
@@ -112,32 +85,14 @@ public class ModelMapperConfig {
                 .toList();
         };
 
-        Converter<Long, User> userFromIdConverter = context -> {
-            Long userId = context.getSource();
-            if (userId == null) {
-                return null;
-            }
-
-            User user = new User();
-            user.setId(userId);
-            return user;
-        };
-
-        Converter<User, Long> userIdConverter = context -> {
-            User user = context.getSource();
-            return user == null ? null : user.getId();
-        };
-
         modelMapper.createTypeMap(UserCreateModel.class, User.class)
             .addMappings(mapper -> {
-                mapper.using(fieldFromIdConverter).map(UserCreateModel::getFieldId, User::setField);
                 mapper.using(projectMembershipsFromIdsConverter).map(UserCreateModel::getProjectIds, User::setProjectMemberships);
             });
 
         modelMapper.createTypeMap(UserPatchModel.class, User.class)
             .addMappings(mapper -> {
                 mapper.skip(User::setId);
-                mapper.using(fieldFromIdConverter).map(UserPatchModel::getFieldId, User::setField);
                 mapper.using(projectMembershipsFromIdsConverter).map(UserPatchModel::getProjectIds, User::setProjectMemberships);
             });
 
@@ -169,37 +124,28 @@ public class ModelMapperConfig {
 
         modelMapper.createTypeMap(ComponentReservationCreateModel.class, ComponentReservation.class)
             .addMappings(mapper -> {
-                mapper.using(componentFromIdConverter).map(ComponentReservationCreateModel::getComponentId, ComponentReservation::setComponent);
-                mapper.using(userFromIdConverter).map(ComponentReservationCreateModel::getBorrowerId, ComponentReservation::setBorrower);
             });
 
         modelMapper.createTypeMap(ComponentReservationPatchModel.class, ComponentReservation.class)
             .addMappings(mapper -> {
                 mapper.skip(ComponentReservation::setId);
-                mapper.using(componentFromIdConverter).map(ComponentReservationPatchModel::getComponentId, ComponentReservation::setComponent);
-                mapper.using(userFromIdConverter).map(ComponentReservationPatchModel::getBorrowerId, ComponentReservation::setBorrower);
             });
 
         modelMapper.createTypeMap(ComponentReservation.class, ComponentReservationStorageModel.class)
             .addMappings(mapper -> {
-                mapper.using(componentIdConverter).map(ComponentReservation::getComponent, ComponentReservationStorageModel::setComponentId);
-                mapper.using(userIdConverter).map(ComponentReservation::getBorrower, ComponentReservationStorageModel::setBorrowerId);
             });
 
         modelMapper.createTypeMap(ComponentPictureCreateModel.class, ComponentPicture.class)
             .addMappings(mapper -> {
-                mapper.using(componentFromIdConverter).map(ComponentPictureCreateModel::getComponentId, ComponentPicture::setComponent);
             });
 
         modelMapper.createTypeMap(ComponentPicturePatchModel.class, ComponentPicture.class)
             .addMappings(mapper -> {
                 mapper.skip(ComponentPicture::setId);
-                mapper.using(componentFromIdConverter).map(ComponentPicturePatchModel::getComponentId, ComponentPicture::setComponent);
             });
 
         modelMapper.createTypeMap(ComponentPicture.class, ComponentPictureStorageModel.class)
             .addMappings(mapper -> {
-                mapper.using(componentIdConverter).map(ComponentPicture::getComponent, ComponentPictureStorageModel::setComponentId);
             });
 
         return modelMapper;

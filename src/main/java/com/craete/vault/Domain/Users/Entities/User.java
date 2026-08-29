@@ -60,11 +60,11 @@ public class User {
     @JoinColumn(name = "field_id", nullable = false)
     private Field field;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "member")
     private List<ProjectMembership> projectMemberships = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user")
-    private List<ComponentReservation> ComponentReservations = new ArrayList<>();
+    @OneToMany(mappedBy = "borrower")
+    private List<ComponentReservation> componentReservations = new ArrayList<>();
 
     @Override
     public boolean equals(Object o) {
