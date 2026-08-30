@@ -48,7 +48,7 @@ public class FieldService implements IFieldService {
         }
 
         Field existingField = fieldRepository.findById(id)
-            .orElseThrow(() -> new FieldNotFoundException(String.format("Field with ID %s was not found.", id)));
+                .orElseThrow(() -> new FieldNotFoundException(String.format("Field with ID %s was not found.", id)));
 
         return toStorageModel(existingField);
     }
@@ -65,31 +65,31 @@ public class FieldService implements IFieldService {
         }
 
         return existingFields.stream()
-            .map(this::toStorageModel)
-            .toList();
+                .map(this::toStorageModel)
+                .toList();
     }
 
     @Override
     public List<FieldStorageModel> getAllFields() {
         return fieldRepository.findAll().stream()
-            .map(this::toStorageModel)
-            .toList();
+                .map(this::toStorageModel)
+                .toList();
     }
 
     @Override
     public List<UUID> getProjectsInField(UUID id) {
         Field field = getFieldEntityById(id);
         return field.getProjects().stream()
-            .map(Project::getId)
-            .toList();
+                .map(Project::getId)
+                .toList();
     }
 
     @Override
     public List<Long> getUsersInField(UUID id) {
         Field field = getFieldEntityById(id);
         return field.getUsers().stream()
-            .map(User::getId)
-            .toList();
+                .map(User::getId)
+                .toList();
     }
 
     @Override
@@ -100,11 +100,11 @@ public class FieldService implements IFieldService {
         }
 
         Field existingField = fieldRepository.findById(fieldPatchModel.getId())
-            .orElseThrow(() -> new FieldNotFoundException(
-                String.format("Field with ID %s was not found.", fieldPatchModel.getId())));
+                .orElseThrow(() -> new FieldNotFoundException(
+                        String.format("Field with ID %s was not found.", fieldPatchModel.getId())));
 
-        existingField.setFieldName(fieldPatchModel.getFieldName());
-        existingField.setFieldId(fieldPatchModel.getId());
+        existingField.setName(fieldPatchModel.getFieldName());
+        existingField.setId(fieldPatchModel.getId());
 
         return toStorageModel(fieldRepository.save(existingField));
     }
@@ -116,24 +116,24 @@ public class FieldService implements IFieldService {
         }
 
         fieldRepository.findById(id)
-            .orElseThrow(() -> new FieldNotFoundException(String.format("Field with ID %s was not found.", id)));
+                .orElseThrow(() -> new FieldNotFoundException(String.format("Field with ID %s was not found.", id)));
 
         fieldRepository.deleteById(id);
     }
 
     private Field getFieldEntityById(UUID id) {
         return fieldRepository.findById(id)
-            .orElseThrow(() -> new FieldNotFoundException(String.format("Field with ID %s was not found.", id)));
+                .orElseThrow(() -> new FieldNotFoundException(String.format("Field with ID %s was not found.", id)));
     }
 
     private FieldStorageModel toStorageModel(Field field) {
         FieldStorageModel storageModel = modelMapper.map(field, FieldStorageModel.class);
-        storageModel.setId(field.getFieldId());
+        storageModel.setId(field.getId());
 
         if (field.getProjects() != null) {
             storageModel.setProjects(field.getProjects().stream()
-                .map(Project::getId)
-                .toList());
+                    .map(Project::getId)
+                    .toList());
         }
 
         return storageModel;

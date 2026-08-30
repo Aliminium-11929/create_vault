@@ -3,27 +3,28 @@ package com.craete.vault.API.ComponentPictures.Controllers;
 import java.util.List;
 import java.util.UUID;
 
-import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.craete.vault.Application.ComponentPictures.Interfaces.IComponentPictureService;
 import com.craete.vault.Application.ComponentPictures.DTOs.ComponentPictureCreateModel;
 import com.craete.vault.Application.ComponentPictures.DTOs.ComponentPicturePatchModel;
 import com.craete.vault.Application.ComponentPictures.DTOs.ComponentPictureStorageModel;
+import com.craete.vault.Application.ComponentPictures.Interfaces.IComponentPictureService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/componentpictures")
 public class ComponentPictureController {
     private final IComponentPictureService componentPictureService;
 
-    public ComponentPictureController(IComponentPictureService componentPictureService){
+    public ComponentPictureController(IComponentPictureService componentPictureService) {
         this.componentPictureService = componentPictureService;
     }
 
@@ -37,10 +38,11 @@ public class ComponentPictureController {
         return componentPictureService.getComponentPictureById(id);
     }
 
-    @GetMapping()
-    public List<ComponentPictureStorageModel> getComponentPicturesById(@Valid @RequestBody List<UUID> ids) {
-        return componentPictureService.getComponentPicturesById(ids);
-    }
+    // @GetMapping("ids")
+    // public List<ComponentPictureStorageModel> getComponentPicturesById(@Valid
+    // @RequestBody List<UUID> ids) {
+    // return componentPictureService.getComponentPicturesById(ids);
+    // }
 
     @GetMapping("/component/{componentId}/single")
     public ComponentPictureStorageModel getComponentPictureByComponentId(@PathVariable UUID id) {
@@ -48,7 +50,8 @@ public class ComponentPictureController {
     }
 
     @GetMapping("/component/{componentId}/single/{order}")
-    public ComponentPictureStorageModel getComponentPictureByComponentId(@PathVariable UUID id, @PathVariable int order) {
+    public ComponentPictureStorageModel getComponentPictureByComponentId(@PathVariable UUID id,
+            @PathVariable int order) {
         return componentPictureService.getComponentPictureByComponentId(id, order);
     }
 
@@ -58,12 +61,14 @@ public class ComponentPictureController {
     }
 
     @PostMapping
-    public ComponentPictureStorageModel createComponentPicture(@Valid @RequestBody ComponentPictureCreateModel componentCreateModel) {
+    public ComponentPictureStorageModel createComponentPicture(
+            @Valid @RequestBody ComponentPictureCreateModel componentCreateModel) {
         return componentPictureService.createComponentPicture(componentCreateModel);
     }
 
     @PatchMapping
-    public ComponentPictureStorageModel patchComponentPicture(@Valid @RequestBody ComponentPicturePatchModel componentPatchModel) {
+    public ComponentPictureStorageModel patchComponentPicture(
+            @Valid @RequestBody ComponentPicturePatchModel componentPatchModel) {
         return componentPictureService.patchComponentPicture(componentPatchModel);
     }
 

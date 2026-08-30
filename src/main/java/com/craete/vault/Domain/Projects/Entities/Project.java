@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.hibernate.annotations.Audited.Table;
-
 import com.craete.vault.Domain.AuditEntity;
 import com.craete.vault.Domain.Fields.Entities.Field;
 import com.craete.vault.Domain.ProjectMemberships.Entities.ProjectMembership;
@@ -23,16 +21,23 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Table(name = "projects")
 public class Project extends AuditEntity {
     @Id
@@ -65,24 +70,16 @@ public class Project extends AuditEntity {
     @NotNull
     private Field field;
 
-    @OneToMany(
-        mappedBy = "project",
-        cascade = CascadeType.ALL,
-        orphanRemoval = true
-    )
-    @OrderBy("pictureOrder ASC")
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("order ASC")
     private List<ProjectPicture> pictures = new ArrayList<>();
 
-    @OneToMany(
-        mappedBy = "project",
-        orphanRemoval = true,
-        cascade = CascadeType.ALL
-    )
+    @OneToMany(mappedBy = "project", orphanRemoval = true, cascade = CascadeType.ALL)
     private List<ProjectMembership> projectMemberships = new ArrayList<>();
 
     public void addPicture(ProjectPicture picture) {
-            pictures.add(picture);
-            picture.setProject(this);
+        pictures.add(picture);
+        picture.setProject(this);
     }
 
     public void removePicture(ProjectPicture picture) {
@@ -92,8 +89,10 @@ public class Project extends AuditEntity {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Project other)) return false;
+        if (this == o)
+            return true;
+        if (!(o instanceof Project other))
+            return false;
         return id != null && id.equals(other.id);
     }
 

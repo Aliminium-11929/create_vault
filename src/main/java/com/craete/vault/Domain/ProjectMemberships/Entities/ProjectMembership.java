@@ -22,13 +22,8 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-@Table(
-    name = "project_members",
-    uniqueConstraints = @UniqueConstraint(
-        name = "uq_project_member",
-        columnNames = {"project_id", "user_id"}
-    )
-)
+@Table(name = "project_members", uniqueConstraints = @UniqueConstraint(name = "uq_project_member", columnNames = {
+        "project_id", "member_id" }))
 public class ProjectMembership extends AuditEntity {
 
     @Id
