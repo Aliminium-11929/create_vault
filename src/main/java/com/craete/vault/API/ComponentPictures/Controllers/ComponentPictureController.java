@@ -50,9 +50,9 @@ public class ComponentPictureController {
     }
 
     @GetMapping("/component/{componentId}/single/{order}")
-    public ComponentPictureStorageModel getComponentPictureByComponentId(@PathVariable UUID id,
+    public ComponentPictureStorageModel getComponentPictureByComponentId(@PathVariable("componentId") UUID componentId,
             @PathVariable int order) {
-        return componentPictureService.getComponentPictureByComponentId(id, order);
+        return componentPictureService.getComponentPictureByComponentId(componentId, order);
     }
 
     @GetMapping("/component/{componentId}")

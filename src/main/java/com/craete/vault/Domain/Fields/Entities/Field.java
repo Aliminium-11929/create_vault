@@ -49,6 +49,6 @@ public class Field extends AuditEntity {
     private List<Project> projects = new ArrayList<>();
 
     @OneToMany(mappedBy = "field", cascade = CascadeType.ALL, orphanRemoval = true)
-    @OrderBy("academicYear ASC")
+    @OrderBy("id ASC")
     private List<User> users = new ArrayList<>();
 }

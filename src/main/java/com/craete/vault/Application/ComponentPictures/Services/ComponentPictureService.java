@@ -11,8 +11,10 @@ import com.craete.vault.Application.ComponentPictures.DTOs.ComponentPicturePatch
 import com.craete.vault.Application.ComponentPictures.DTOs.ComponentPictureStorageModel;
 import com.craete.vault.Application.ComponentPictures.Interfaces.IComponentPictureService;
 import com.craete.vault.Domain.ComponentPictures.Entities.ComponentPicture;
+import com.craete.vault.Domain.Components.Entities.Component;
 import com.craete.vault.Exceptions.ComponentPictureNotFoundException;
 import com.craete.vault.Infrastructure.ComponentPictures.Repository.ComponentPictureRepository;
+import com.craete.vault.Infrastructure.Components.Repository.ComponentRepository;
 
 import jakarta.transaction.Transactional;
 
@@ -20,21 +22,34 @@ import jakarta.transaction.Transactional;
 public class ComponentPictureService implements IComponentPictureService {
 
     private final ComponentPictureRepository componentPictureRepository;
+    private final ComponentRepository componentRepository;
     private final ModelMapper modelMapper;
 
-    public ComponentPictureService(ComponentPictureRepository componentPictureRepository, ModelMapper modelMapper) {
+    public ComponentPictureService(ComponentPictureRepository componentPictureRepository,
+            ComponentRepository componentRepository, ModelMapper modelMapper) {
         this.componentPictureRepository = componentPictureRepository;
+        this.componentRepository = componentRepository;
         this.modelMapper = modelMapper;
     }
 
     @Override
     @Transactional
-    public ComponentPictureStorageModel createComponentPicture(ComponentPictureCreateModel componentPictureCreateModel) {
+    public ComponentPictureStorageModel createComponentPicture(
+            ComponentPictureCreateModel componentPictureCreateModel) {
         if (componentPictureCreateModel == null) {
             throw new IllegalArgumentException("Component picture must not be null.");
         }
 
-        ComponentPicture picture = modelMapper.map(componentPictureCreateModel, ComponentPicture.class);
+        Component component = componentRepository.findById(componentPictureCreateModel.getComponentId())
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "Component not found: " + componentPictureCreateModel.getComponentId()));
+
+        ComponentPicture picture = new ComponentPicture();
+        picture.setComponent(component);
+        picture.setStorageKey(componentPictureCreateModel.getStorageKey());
+        picture.setOrder(componentPictureCreateModel.getOrder());
+        picture.setCaption(componentPictureCreateModel.getCaption());
+
         ComponentPicture savedPicture = componentPictureRepository.save(picture);
         return modelMapper.map(savedPicture, ComponentPictureStorageModel.class);
     }
@@ -46,8 +61,8 @@ public class ComponentPictureService implements IComponentPictureService {
         }
 
         ComponentPicture picture = componentPictureRepository.findById(id)
-            .orElseThrow(() -> new ComponentPictureNotFoundException(
-                String.format("Component picture with ID %s was not found.", id)));
+                .orElseThrow(() -> new ComponentPictureNotFoundException(
+                        String.format("Component picture with ID %s was not found.", id)));
 
         return modelMapper.map(picture, ComponentPictureStorageModel.class);
     }
@@ -59,11 +74,11 @@ public class ComponentPictureService implements IComponentPictureService {
         }
 
         return componentPictureRepository.findAll().stream()
-            .filter(picture -> picture.getComponent() != null && picture.getComponent().getId().equals(componentId))
-            .findFirst()
-            .map(picture -> modelMapper.map(picture, ComponentPictureStorageModel.class))
-            .orElseThrow(() -> new ComponentPictureNotFoundException(
-                String.format("Component picture for component ID %s was not found.", componentId)));
+                .filter(picture -> picture.getComponent() != null && picture.getComponent().getId().equals(componentId))
+                .findFirst()
+                .map(picture -> modelMapper.map(picture, ComponentPictureStorageModel.class))
+                .orElseThrow(() -> new ComponentPictureNotFoundException(
+                        String.format("Component picture for component ID %s was not found.", componentId)));
     }
 
     @Override
@@ -73,12 +88,13 @@ public class ComponentPictureService implements IComponentPictureService {
         }
 
         return componentPictureRepository.findAll().stream()
-            .filter(picture -> picture.getComponent() != null && picture.getComponent().getId().equals(componentId))
-            .filter(picture -> picture.getOrder() == order)
-            .findFirst()
-            .map(picture -> modelMapper.map(picture, ComponentPictureStorageModel.class))
-            .orElseThrow(() -> new ComponentPictureNotFoundException(
-                String.format("Component picture for component ID %s with order %s was not found.", componentId, order)));
+                .filter(picture -> picture.getComponent() != null && picture.getComponent().getId().equals(componentId))
+                .filter(picture -> picture.getOrder() == order)
+                .findFirst()
+                .map(picture -> modelMapper.map(picture, ComponentPictureStorageModel.class))
+                .orElseThrow(() -> new ComponentPictureNotFoundException(
+                        String.format("Component picture for component ID %s with order %s was not found.", componentId,
+                                order)));
     }
 
     @Override
@@ -93,8 +109,8 @@ public class ComponentPictureService implements IComponentPictureService {
         }
 
         return pictures.stream()
-            .map(picture -> modelMapper.map(picture, ComponentPictureStorageModel.class))
-            .toList();
+                .map(picture -> modelMapper.map(picture, ComponentPictureStorageModel.class))
+                .toList();
     }
 
     @Override
@@ -104,23 +120,23 @@ public class ComponentPictureService implements IComponentPictureService {
         }
 
         List<ComponentPicture> pictures = componentPictureRepository.findAll().stream()
-            .filter(picture -> picture.getComponent() != null && picture.getComponent().getId().equals(componentId))
-            .toList();
+                .filter(picture -> picture.getComponent() != null && picture.getComponent().getId().equals(componentId))
+                .toList();
 
         if (pictures.isEmpty()) {
             throw new ComponentPictureNotFoundException("Component pictures not found.");
         }
 
         return pictures.stream()
-            .map(picture -> modelMapper.map(picture, ComponentPictureStorageModel.class))
-            .toList();
+                .map(picture -> modelMapper.map(picture, ComponentPictureStorageModel.class))
+                .toList();
     }
 
     @Override
     public List<ComponentPictureStorageModel> getAllComponentPictures() {
         return componentPictureRepository.findAll().stream()
-            .map(picture -> modelMapper.map(picture, ComponentPictureStorageModel.class))
-            .toList();
+                .map(picture -> modelMapper.map(picture, ComponentPictureStorageModel.class))
+                .toList();
     }
 
     @Override
@@ -131,8 +147,9 @@ public class ComponentPictureService implements IComponentPictureService {
         }
 
         ComponentPicture existingPicture = componentPictureRepository.findById(componentPicturePatchModel.getId())
-            .orElseThrow(() -> new ComponentPictureNotFoundException(
-                String.format("Component picture with ID %s was not found.", componentPicturePatchModel.getId())));
+                .orElseThrow(() -> new ComponentPictureNotFoundException(
+                        String.format("Component picture with ID %s was not found.",
+                                componentPicturePatchModel.getId())));
 
         modelMapper.map(componentPicturePatchModel, existingPicture);
         return modelMapper.map(componentPictureRepository.save(existingPicture), ComponentPictureStorageModel.class);
@@ -145,8 +162,8 @@ public class ComponentPictureService implements IComponentPictureService {
         }
 
         componentPictureRepository.findById(id)
-            .orElseThrow(() -> new ComponentPictureNotFoundException(
-                String.format("Component picture with ID %s was not found.", id)));
+                .orElseThrow(() -> new ComponentPictureNotFoundException(
+                        String.format("Component picture with ID %s was not found.", id)));
 
         componentPictureRepository.deleteById(id);
     }
@@ -158,8 +175,8 @@ public class ComponentPictureService implements IComponentPictureService {
         }
 
         List<ComponentPicture> pictures = componentPictureRepository.findAll().stream()
-            .filter(picture -> picture.getComponent() != null && picture.getComponent().getId().equals(componentId))
-            .toList();
+                .filter(picture -> picture.getComponent() != null && picture.getComponent().getId().equals(componentId))
+                .toList();
 
         if (pictures.isEmpty()) {
             throw new ComponentPictureNotFoundException("Component pictures not found.");

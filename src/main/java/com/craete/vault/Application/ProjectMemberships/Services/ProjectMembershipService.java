@@ -11,8 +11,12 @@ import com.craete.vault.Application.ProjectMemberships.DTOs.ProjectMembershipPat
 import com.craete.vault.Application.ProjectMemberships.DTOs.ProjectMembershipStorageModel;
 import com.craete.vault.Application.ProjectMemberships.Interfaces.IProjectMembershipService;
 import com.craete.vault.Domain.ProjectMemberships.Entities.ProjectMembership;
+import com.craete.vault.Domain.Projects.Entities.Project;
+import com.craete.vault.Domain.Users.Entities.User;
 import com.craete.vault.Exceptions.ProjectMembershipNotFoundException;
 import com.craete.vault.Infrastructure.ProjectMemberships.Repository.ProjectMembershipRepository;
+import com.craete.vault.Infrastructure.Projects.Repository.ProjectRepository;
+import com.craete.vault.Infrastructure.Users.Repository.UserRepository;
 
 import jakarta.transaction.Transactional;
 
@@ -22,11 +26,16 @@ import jakarta.transaction.Transactional;
 @Service
 public class ProjectMembershipService implements IProjectMembershipService {
 
-    private ProjectMembershipRepository projectMembershipRepository;
-    private ModelMapper modelMapper;
+    private final ProjectMembershipRepository projectMembershipRepository;
+    private final ProjectRepository projectRepository;
+    private final UserRepository userRepository;
+    private final ModelMapper modelMapper;
 
-    public ProjectMembershipService(ProjectMembershipRepository projectMembershipRepository, ModelMapper modelMapper) {
+    public ProjectMembershipService(ProjectMembershipRepository projectMembershipRepository,
+            ProjectRepository projectRepository, UserRepository userRepository, ModelMapper modelMapper) {
         this.projectMembershipRepository = projectMembershipRepository;
+        this.projectRepository = projectRepository;
+        this.userRepository = userRepository;
         this.modelMapper = modelMapper;
     }
 
@@ -36,8 +45,20 @@ public class ProjectMembershipService implements IProjectMembershipService {
             ProjectMembershipCreateModel ProjectMembershipCreateModel) {
         if (ProjectMembershipCreateModel == null)
             throw new IllegalArgumentException("Project membership can't be null.");
-        ProjectMembership savedProjectMembership = projectMembershipRepository.save(
-                modelMapper.map(ProjectMembershipCreateModel, ProjectMembership.class));
+
+        Project project = projectRepository.findById(ProjectMembershipCreateModel.getProjectId())
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "Project not found: " + ProjectMembershipCreateModel.getProjectId()));
+
+        User member = userRepository.findById(ProjectMembershipCreateModel.getMemberId())
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "User not found: " + ProjectMembershipCreateModel.getMemberId()));
+
+        ProjectMembership membership = new ProjectMembership();
+        membership.setProject(project);
+        membership.setMember(member);
+
+        ProjectMembership savedProjectMembership = projectMembershipRepository.save(membership);
         return modelMapper.map(savedProjectMembership, ProjectMembershipStorageModel.class);
     }
 
@@ -76,12 +97,24 @@ public class ProjectMembershipService implements IProjectMembershipService {
             ProjectMembershipPatchModel ProjectMembershipPatchModel) {
         if (ProjectMembershipPatchModel == null)
             throw new IllegalArgumentException("Project membership can't be null");
+
         ProjectMembership existingMembership = projectMembershipRepository.findById(ProjectMembershipPatchModel.getId())
                 .orElseThrow(
                         () -> new ProjectMembershipNotFoundException(
                                 String.format("Project membership with id %s not found",
                                         ProjectMembershipPatchModel.getId())));
-        modelMapper.map(ProjectMembershipPatchModel, existingMembership);
+
+        Project project = projectRepository.findById(ProjectMembershipPatchModel.getProjectId())
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "Project not found: " + ProjectMembershipPatchModel.getProjectId()));
+
+        User member = userRepository.findById(ProjectMembershipPatchModel.getMemberId())
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "User not found: " + ProjectMembershipPatchModel.getMemberId()));
+
+        existingMembership.setProject(project);
+        existingMembership.setMember(member);
+
         return modelMapper.map(projectMembershipRepository.save(existingMembership),
                 ProjectMembershipStorageModel.class);
     }

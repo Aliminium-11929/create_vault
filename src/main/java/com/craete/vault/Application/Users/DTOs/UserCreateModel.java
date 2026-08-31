@@ -19,6 +19,9 @@ import lombok.Setter;
 @AllArgsConstructor
 public class UserCreateModel {
 
+	@NotNull
+	private Long Id;
+
 	@NotBlank
 	private String name;
 
@@ -26,7 +29,7 @@ public class UserCreateModel {
 	@NotBlank
 	private String email;
 
-	@NotBlank
+	@NotNull
 	private UserRole role;
 
 	@NotNull

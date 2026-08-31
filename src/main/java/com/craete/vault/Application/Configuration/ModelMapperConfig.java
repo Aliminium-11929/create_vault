@@ -8,7 +8,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.craete.vault.Application.ComponentPictures.DTOs.ComponentPictureCreateModel;
 import com.craete.vault.Application.ComponentPictures.DTOs.ComponentPicturePatchModel;
 import com.craete.vault.Application.ComponentPictures.DTOs.ComponentPictureStorageModel;
 import com.craete.vault.Application.ComponentReservations.DTOs.ComponentReservationCreateModel;
@@ -17,6 +16,10 @@ import com.craete.vault.Application.ComponentReservations.DTOs.ComponentReservat
 import com.craete.vault.Application.Components.DTOs.ComponentCreateModel;
 import com.craete.vault.Application.Components.DTOs.ComponentPatchModel;
 import com.craete.vault.Application.Components.DTOs.ComponentStorageModel;
+import com.craete.vault.Application.ProjectMemberships.DTOs.ProjectMembershipPatchModel;
+import com.craete.vault.Application.ProjectMemberships.DTOs.ProjectMembershipStorageModel;
+import com.craete.vault.Application.ProjectPictures.DTOs.ProjectPicturePatchModel;
+import com.craete.vault.Application.ProjectPictures.DTOs.ProjectPictureStorageModel;
 import com.craete.vault.Application.Users.DTOs.UserCreateModel;
 import com.craete.vault.Application.Users.DTOs.UserPatchModel;
 import com.craete.vault.Application.Users.DTOs.UserStorageModel;
@@ -25,6 +28,7 @@ import com.craete.vault.Domain.ComponentReservations.Entities.ComponentReservati
 import com.craete.vault.Domain.Components.Entities.Component;
 import com.craete.vault.Domain.Fields.Entities.Field;
 import com.craete.vault.Domain.ProjectMemberships.Entities.ProjectMembership;
+import com.craete.vault.Domain.ProjectPictures.Entities.ProjectPicture;
 import com.craete.vault.Domain.Projects.Entities.Project;
 import com.craete.vault.Domain.Users.Entities.User;
 
@@ -138,7 +142,21 @@ public class ModelMapperConfig {
                 .addMappings(mapper -> {
                 });
 
-        modelMapper.createTypeMap(ComponentPictureCreateModel.class, ComponentPicture.class)
+        modelMapper.createTypeMap(ProjectMembershipPatchModel.class, ProjectMembership.class)
+                .addMappings(mapper -> {
+                    mapper.skip(ProjectMembership::setId);
+                });
+
+        modelMapper.createTypeMap(ProjectMembership.class, ProjectMembershipStorageModel.class)
+                .addMappings(mapper -> {
+                });
+
+        modelMapper.createTypeMap(ProjectPicturePatchModel.class, ProjectPicture.class)
+                .addMappings(mapper -> {
+                    mapper.skip(ProjectPicture::setId);
+                });
+
+        modelMapper.createTypeMap(ProjectPicture.class, ProjectPictureStorageModel.class)
                 .addMappings(mapper -> {
                 });
 

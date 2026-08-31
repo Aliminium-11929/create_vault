@@ -11,8 +11,10 @@ import com.craete.vault.Application.ProjectPictures.DTOs.ProjectPicturePatchMode
 import com.craete.vault.Application.ProjectPictures.DTOs.ProjectPictureStorageModel;
 import com.craete.vault.Application.ProjectPictures.Interfaces.IProjectPictureService;
 import com.craete.vault.Domain.ProjectPictures.Entities.ProjectPicture;
+import com.craete.vault.Domain.Projects.Entities.Project;
 import com.craete.vault.Exceptions.ProjectPictureNotFoundException;
 import com.craete.vault.Infrastructure.ProjectPictures.Repository.ProjectPictureRepository;
+import com.craete.vault.Infrastructure.Projects.Repository.ProjectRepository;
 
 import jakarta.transaction.Transactional;
 
@@ -23,10 +25,13 @@ import jakarta.transaction.Transactional;
 public class ProjectPictureService implements IProjectPictureService {
 
     private final ProjectPictureRepository projectPictureRepository;
+    private final ProjectRepository projectRepository;
     private final ModelMapper modelMapper;
 
-    public ProjectPictureService(ProjectPictureRepository projectPictureRepository, ModelMapper modelMapper) {
+    public ProjectPictureService(ProjectPictureRepository projectPictureRepository,
+            ProjectRepository projectRepository, ModelMapper modelMapper) {
         this.projectPictureRepository = projectPictureRepository;
+        this.projectRepository = projectRepository;
         this.modelMapper = modelMapper;
     }
 
@@ -35,8 +40,18 @@ public class ProjectPictureService implements IProjectPictureService {
     public ProjectPictureStorageModel createProjectPicture(ProjectPictureCreateModel ProjectPictureCreateModel) {
         if (ProjectPictureCreateModel == null)
             throw new IllegalArgumentException("Picture can't be null");
-        ProjectPicture savedProjectPicture = projectPictureRepository
-                .save(modelMapper.map(ProjectPictureCreateModel, ProjectPicture.class));
+
+        Project project = projectRepository.findById(ProjectPictureCreateModel.getProjectId())
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "Project not found: " + ProjectPictureCreateModel.getProjectId()));
+
+        ProjectPicture picture = new ProjectPicture();
+        picture.setProject(project);
+        picture.setStorageKey(ProjectPictureCreateModel.getStorageKey());
+        picture.setOrder(ProjectPictureCreateModel.getOrder());
+        picture.setCaption(ProjectPictureCreateModel.getCaption());
+
+        ProjectPicture savedProjectPicture = projectPictureRepository.save(picture);
         return modelMapper.map(savedProjectPicture, ProjectPictureStorageModel.class);
     }
 

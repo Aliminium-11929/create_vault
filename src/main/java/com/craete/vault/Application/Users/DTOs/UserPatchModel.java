@@ -29,7 +29,7 @@ public class UserPatchModel {
 	@NotBlank
 	private String email;
 
-	@NotBlank
+	@NotNull
 	private UserRole role;
 
 	@NotNull
