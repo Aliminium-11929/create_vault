@@ -139,6 +139,7 @@ Request body (`UserCreateModel`):
 
 ```json
 {
+  "id": 202402880,
   "name": "Alice Johnson",
   "email": "alice@example.com",
   "role": "STUDENT",
@@ -150,6 +151,7 @@ Request body (`UserCreateModel`):
 ```
 
 Validation notes:
+- `id`: required `Long` user ID
 - `name`: required, non-blank
 - `email`: required, valid email
 - `role`: required, one of `STUDENT`, `TUTOR`, `SUPERVISOR`
