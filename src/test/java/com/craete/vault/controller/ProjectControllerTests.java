@@ -2,6 +2,9 @@ package com.craete.vault.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,6 +17,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 
 import com.craete.vault.VaultApplication;
@@ -198,6 +202,63 @@ class ProjectControllerTests {
 
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertEquals(0L, projectRepository.count());
+	}
+
+	@Test
+	void createProject_withBlankTitle_returnsBadRequest() {
+		Field field = fieldRepository.saveAndFlush(Field.builder().name("Urban Planning").build());
+		User supervisor = userRepository.saveAndFlush(User.builder().id(1L).name("planner")
+				.email("planner@example.com").role(UserRole.SUPERVISOR).field(field).build());
+
+		ProjectCreateModel request = ProjectCreateModel.builder()
+				.title(" ")
+				.description("Missing title")
+				.academicYear(2025)
+				.supervisorId(supervisor.getId())
+				.fieldId(field.getId())
+				.build();
+
+		HttpStatusCodeException exception = assertThrows(HttpStatusCodeException.class, () -> restTemplate.exchange(
+				createURLWithPort("/projects"),
+				HttpMethod.POST,
+				new HttpEntity<>(request, headers),
+				ProjectStorageModel.class));
+
+		assertEquals(HttpStatus.BAD_REQUEST, exception.getStatusCode());
+	}
+
+	@Test
+	void createProject_withUnknownSupervisor_returnsBadRequest() {
+		Field field = fieldRepository.saveAndFlush(Field.builder().name("Renewables").build());
+
+		ProjectCreateModel request = ProjectCreateModel.builder()
+				.title("Solar monitor")
+				.description("Monitoring")
+				.academicYear(2025)
+				.supervisorId(999_999L)
+				.fieldId(field.getId())
+				.build();
+
+		HttpStatusCodeException exception = assertThrows(HttpStatusCodeException.class, () -> restTemplate.exchange(
+				createURLWithPort("/projects"),
+				HttpMethod.POST,
+				new HttpEntity<>(request, headers),
+				ProjectStorageModel.class));
+
+		assertEquals(HttpStatus.BAD_REQUEST, exception.getStatusCode());
+	}
+
+	@Test
+	void getProjectById_whenProjectDoesNotExist_returnsNotFound() {
+		UUID missingId = UUID.randomUUID();
+
+		HttpStatusCodeException exception = assertThrows(HttpStatusCodeException.class, () -> restTemplate.exchange(
+				createURLWithPort("/projects/" + missingId),
+				HttpMethod.GET,
+				new HttpEntity<>(headers),
+				ProjectStorageModel.class));
+
+		assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
 	}
 
 	private String createURLWithPort(String url) {

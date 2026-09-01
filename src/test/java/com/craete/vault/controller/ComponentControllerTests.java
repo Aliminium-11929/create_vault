@@ -2,6 +2,9 @@ package com.craete.vault.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,6 +17,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 
 import com.craete.vault.VaultApplication;
@@ -150,6 +154,48 @@ class ComponentControllerTests {
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(0L, componentRepository.count());
+    }
+
+    @Test
+    void createComponent_withInvalidAvailableQuantity_returnsBadRequest() {
+        ComponentCreateModel request = new ComponentCreateModel();
+        request.setName("Broken Sensor");
+        request.setTotalQuantity(10);
+        request.setAvailableQuantity(-1);
+
+        HttpStatusCodeException exception = assertThrows(HttpStatusCodeException.class, () -> restTemplate.exchange(
+                createURLWithPort("/components"),
+                HttpMethod.POST,
+                new HttpEntity<>(request, headers),
+                ComponentStorageModel.class));
+
+        assertEquals(HttpStatus.BAD_REQUEST, exception.getStatusCode());
+    }
+
+    @Test
+    void getComponentById_whenComponentDoesNotExist_returnsNotFound() {
+        UUID missingId = UUID.randomUUID();
+
+        HttpStatusCodeException exception = assertThrows(HttpStatusCodeException.class, () -> restTemplate.exchange(
+                createURLWithPort("/components/" + missingId),
+                HttpMethod.GET,
+                new HttpEntity<>(headers),
+                ComponentStorageModel.class));
+
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
+    }
+
+    @Test
+    void deleteComponentById_whenComponentDoesNotExist_returnsNotFound() {
+        UUID missingId = UUID.randomUUID();
+
+        HttpStatusCodeException exception = assertThrows(HttpStatusCodeException.class, () -> restTemplate.exchange(
+                createURLWithPort("/components/" + missingId),
+                HttpMethod.DELETE,
+                new HttpEntity<>(headers),
+                Void.class));
+
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
     }
 
     private String createURLWithPort(String url) {

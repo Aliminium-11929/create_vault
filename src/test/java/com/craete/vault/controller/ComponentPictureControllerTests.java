@@ -2,6 +2,9 @@ package com.craete.vault.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,6 +17,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 
 import com.craete.vault.VaultApplication;
@@ -178,6 +182,59 @@ class ComponentPictureControllerTests {
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(0L, componentPictureRepository.count());
+    }
+
+    @Test
+    void createComponentPicture_withNullStorageKey_returnsBadRequest() {
+        Component component = new Component();
+        component.setName("Filter rail");
+        component.setTotalQuantity(5);
+        component.setAvailableQuantity(3);
+        component = componentRepository.saveAndFlush(component);
+
+        ComponentPictureCreateModel request = new ComponentPictureCreateModel();
+        request.setComponentId(component.getId());
+        request.setStorageKey(null);
+        request.setOrder(1);
+        request.setCaption("Missing key");
+
+        HttpStatusCodeException exception = assertThrows(HttpStatusCodeException.class, () -> restTemplate.exchange(
+                createURLWithPort("/componentpictures"),
+                HttpMethod.POST,
+                new HttpEntity<>(request, headers),
+                ComponentPictureStorageModel.class));
+
+        assertEquals(HttpStatus.BAD_REQUEST, exception.getStatusCode());
+    }
+
+    @Test
+    void createComponentPicture_withUnknownComponent_returnsBadRequest() {
+        ComponentPictureCreateModel request = new ComponentPictureCreateModel();
+        request.setComponentId(UUID.randomUUID());
+        request.setStorageKey("components/missing.png");
+        request.setOrder(1);
+        request.setCaption("Missing component");
+
+        HttpStatusCodeException exception = assertThrows(HttpStatusCodeException.class, () -> restTemplate.exchange(
+                createURLWithPort("/componentpictures"),
+                HttpMethod.POST,
+                new HttpEntity<>(request, headers),
+                ComponentPictureStorageModel.class));
+
+        assertEquals(HttpStatus.BAD_REQUEST, exception.getStatusCode());
+    }
+
+    @Test
+    void getComponentPictureById_whenPictureDoesNotExist_returnsNotFound() {
+        UUID missingId = UUID.randomUUID();
+
+        HttpStatusCodeException exception = assertThrows(HttpStatusCodeException.class, () -> restTemplate.exchange(
+                createURLWithPort("/componentpictures/" + missingId),
+                HttpMethod.GET,
+                new HttpEntity<>(headers),
+                ComponentPictureStorageModel.class));
+
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
     }
 
     private String createURLWithPort(String url) {

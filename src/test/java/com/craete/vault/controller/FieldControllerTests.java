@@ -2,6 +2,9 @@ package com.craete.vault.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,6 +17,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 
 import com.craete.vault.VaultApplication;
@@ -141,6 +145,46 @@ class FieldControllerTests {
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(0L, fieldRepository.count());
+    }
+
+    @Test
+    void createField_withNullName_returnsBadRequest() {
+        FieldCreateModel request = new FieldCreateModel();
+        request.setFieldName(null);
+
+        HttpStatusCodeException exception = assertThrows(HttpStatusCodeException.class, () -> restTemplate.exchange(
+                createURLWithPort("/fields"),
+                HttpMethod.POST,
+                new HttpEntity<>(request, headers),
+                FieldStorageModel.class));
+
+        assertEquals(HttpStatus.BAD_REQUEST, exception.getStatusCode());
+    }
+
+    @Test
+    void getFieldById_whenFieldDoesNotExist_returnsNotFound() {
+        UUID missingId = UUID.randomUUID();
+
+        HttpStatusCodeException exception = assertThrows(HttpStatusCodeException.class, () -> restTemplate.exchange(
+                createURLWithPort("/fields/" + missingId),
+                HttpMethod.GET,
+                new HttpEntity<>(headers),
+                FieldStorageModel.class));
+
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
+    }
+
+    @Test
+    void deleteFieldById_whenFieldDoesNotExist_returnsNotFound() {
+        UUID missingId = UUID.randomUUID();
+
+        HttpStatusCodeException exception = assertThrows(HttpStatusCodeException.class, () -> restTemplate.exchange(
+                createURLWithPort("/fields/" + missingId),
+                HttpMethod.DELETE,
+                new HttpEntity<>(headers),
+                Void.class));
+
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
     }
 
     private String createURLWithPort(String url) {
