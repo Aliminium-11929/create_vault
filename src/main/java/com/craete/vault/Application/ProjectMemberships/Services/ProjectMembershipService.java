@@ -54,6 +54,14 @@ public class ProjectMembershipService implements IProjectMembershipService {
                 .orElseThrow(() -> new IllegalArgumentException(
                         "User not found: " + ProjectMembershipCreateModel.getMemberId()));
 
+        boolean alreadyExists = projectMembershipRepository.findByProject_Id(project.getId()).stream()
+                .anyMatch(existingMembership -> existingMembership.getMember() != null
+                        && existingMembership.getMember().getId().equals(member.getId()));
+        if (alreadyExists) {
+            throw new IllegalArgumentException(
+                    "Membership already exists for project " + project.getId() + " and member " + member.getId());
+        }
+
         ProjectMembership membership = new ProjectMembership();
         membership.setProject(project);
         membership.setMember(member);

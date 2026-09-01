@@ -37,7 +37,18 @@ public class UserService implements IUserService {
             throw new IllegalArgumentException("User must not be null.");
         }
 
-        User savedUser = userRepository.save(modelMapper.map(userToCreate, User.class));
+        if (userToCreate.getFieldId() == null) {
+            throw new IllegalArgumentException("Field ID must not be null.");
+        }
+
+        Field field = fieldRepository.findById(userToCreate.getFieldId())
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "Field not found: " + userToCreate.getFieldId()));
+
+        User user = modelMapper.map(userToCreate, User.class);
+        user.setField(field);
+
+        User savedUser = userRepository.save(user);
         return modelMapper.map(savedUser, UserStorageModel.class);
     }
 
